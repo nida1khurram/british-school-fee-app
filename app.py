@@ -351,7 +351,7 @@ def format_trial_remaining(remaining):
     return f"{days} days, {hours} hours, {minutes} minutes"
 
 def home_page():
-    """Display beautiful home page with logo"""
+    """Display beautiful home page with logo and school name at the very top and about section in a dropdown"""
     st.set_page_config(page_title="School Fees Management", layout="wide", page_icon="🏫")
     
     st.markdown("""
@@ -407,7 +407,7 @@ def home_page():
         background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%) !important;
         color: white !important;
         border: none !important;
-        padding: 0.5rem 1.5rem !important;
+        padding: 0.5rem 1.5rem;
         border-radius: 8px !important;
         font-weight: 600 !important;
         margin-top: 2rem !important;
@@ -415,7 +415,7 @@ def home_page():
     .circle-container {
         display: flex;
         justify-content: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
     }
     .circle {
         width: 200px;
@@ -433,9 +433,41 @@ def home_page():
         height: 100%;
         object-fit: cover;
     }
+    .expander-content {
+        background-color: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .about-heading {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    .about-subheading {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #3498db;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .about-text {
+        color: #7f8c8d;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    .about-list {
+        color: #7f8c8d;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-left: 1rem;
+    }
     </style>
     """, unsafe_allow_html=True)
     
+    # Logo at the very top
     st.markdown('<div class="circle-container">', unsafe_allow_html=True)
     
     try:
@@ -455,10 +487,12 @@ def home_page():
     )
     st.markdown('</div>', unsafe_allow_html=True)
     
+    # School Name and Subtitle
     st.markdown('<h1 class="title-text">British School of Karachi </h1>', unsafe_allow_html=True)
     st.markdown('<h1 class="title-text">Fees Management System</h1>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle-text">Streamline your school\'s fee collection and tracking process with a 1-month free trial!</p>', unsafe_allow_html=True)
     
+    # Feature Cards
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -488,12 +522,126 @@ def home_page():
         </div>
         """, unsafe_allow_html=True)
     
+    # Login Button
     st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
     if st.button("Sign Up for Free Trial / Login", key="home_login_btn", help="Click to sign up or login"):
         st.session_state.show_login = True
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
     
+    # About Section in Dropdown
+    with st.expander("📌 About This App"):
+        st.markdown('<div class="expander-content">', unsafe_allow_html=True)
+        st.markdown('<h2 class="about-heading">School Fees Management System - Information, Features & Benefits</h2>', unsafe_allow_html=True)
+        
+        st.markdown('<h3 class="about-subheading">📌 What is this App?</h3>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <p class="about-text">
+                This is a digital system for schools to easily manage student fee records. It helps track payments, 
+                generate reports, and maintain records securely.
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
+        
+        st.markdown('<h3 class="about-subheading">✨ Key Features</h3>', unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown(
+                """
+                <p class="about-list"><strong>Easy Fee Collection</strong></p>
+                <ul class="about-list">
+                    <li>Record monthly, annual, and admission fees in one place.</li>
+                    <li>Track paid/unpaid students with color-coded status (✅ Paid / ❌ Unpaid).</li>
+                </ul>
+                <p class="about-list"><strong>Admin Controls</strong></p>
+                <ul class="about-list">
+                    <li>Set custom fees for each student/class.</li>
+                    <li>Manage users (add/remove staff accounts).</li>
+                </ul>
+                """,
+                unsafe_allow_html=True
+            )
+        with col2:
+            st.markdown(
+                """
+                <p class="about-list"><strong>Student Reports</strong></p>
+                <ul class="about-list">
+                    <li>View payment history for any student.</li>
+                    <li>Check yearly/monthly summaries and download reports.</li>
+                </ul>
+                <p class="about-list"><strong>Secure & Reliable</strong></p>
+                <ul class="about-list">
+                    <li>Login with username/password.</li>
+                    <li>Data saved securely in files (no risk of losing records).</li>
+                </ul>
+                <p class="about-list"><strong>Free 1-Month Trial</strong></p>
+                <ul class="about-list">
+                    <li>New users get 30 days free to test all features.</li>
+                </ul>
+                """,
+                unsafe_allow_html=True
+            )
+        
+        st.markdown('<h3 class="about-subheading">👍 Why Use This App?</h3>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <ul class="about-list">
+                <li><strong>Saves Time</strong> – No more paper registers or manual calculations.</li>
+                <li><strong>Reduces Errors</strong> – Automatic totals and reminders for unpaid fees.</li>
+                <li><strong>Always Accessible</strong> – View records anytime, anywhere.</li>
+                <li><strong>Data Security</strong> – No more lost fee registers or tampered records.</li>
+            </ul>
+            """,
+            unsafe_allow_html=True
+        )
+        
+        st.markdown('<h3 class="about-subheading">🎯 Perfect For</h3>', unsafe_allow_html=True)
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown(
+                """
+                <p class="about-list"><strong>School Admins</strong></p>
+                <ul class="about-list">
+                    <li>Manage all fee records in one place.</li>
+                </ul>
+                """,
+                unsafe_allow_html=True
+            )
+        with col2:
+            st.markdown(
+                """
+                <p class="about-list"><strong>Accountants</strong></p>
+                <ul class="about-list">
+                    <li>Generate reports with a single click.</li>
+                </ul>
+                """,
+                unsafe_allow_html=True
+            )
+        with col3:
+            st.markdown(
+                """
+                <p class="about-list"><strong>Teachers</strong></p>
+                <ul class="about-list">
+                    <li>Quickly check which students have paid.</li>
+                </ul>
+                """,
+                unsafe_allow_html=True
+            )
+        
+        st.markdown('<h3 class="about-subheading">🚀 Get Started Today!</h3>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <p class="about-text">
+                Try the 1-month free trial – no payment needed!
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Footer
     st.markdown("""
     <div style="text-align: center; margin-top: 3rem; color: #7f8c8d; font-size: 0.8rem;">
         <p>© 2025 School Fees Management System | Developed with ❤️ for educational institutions</p>
