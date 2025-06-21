@@ -364,7 +364,7 @@ def home_page():
     }
     .title-text {
         font-size: 3.5rem !important;
-        font-weight: 700 !important;
+        font-weight: 600 !important;
         color: #2c3e50 !important;
         text-align: center;
         margin-bottom: 0.5rem !important;
