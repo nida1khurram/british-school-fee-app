@@ -1,4 +1,4 @@
-# type:ignore   #https://knai-school-app.streamlit.app/
+# type:ignore   #https://knai-school.streamlit.app/
 import streamlit as st
 from datetime import datetime, timedelta
 import os
