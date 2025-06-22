@@ -10,16 +10,16 @@ from PIL import Image
 import base64
 import re
 
-# # Hide the GitHub link in the top right corner
-# hide_github_link = """
-# <style>
-# #MainMenu {visibility: hidden;}
-# footer {visibility: hidden;}
-# header {visibility: hidden;}
-# </style>
-# """
-# st.markdown(hide_github_link, unsafe_allow_html=True)
-# #end  Hide the GitHub link in the top right corner
+# Hide the GitHub link in the top right corner
+hide_github_link = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_github_link, unsafe_allow_html=True)
+#end  Hide the GitHub link in the top right corner
 
 # Initialize or load files
 CSV_FILE = "fees_data.csv"
