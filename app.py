@@ -1,4 +1,4 @@
-# type:ignore   #https://knai-school.streamlit.app/
+# type:ignore   #https://knai-school-app.streamlit.app/
 import streamlit as st
 from datetime import datetime, timedelta
 import os
@@ -9,7 +9,6 @@ import json
 from PIL import Image
 import base64
 import re
-
 
 # Initialize or load files
 CSV_FILE = "fees_data.csv"
@@ -67,8 +66,8 @@ def verify_password(stored_password, provided_password):
     return stored_password == sha256(provided_password.encode('utf-8')).hexdigest()
 
 def validate_email(email):
-    """Validate email format"""
-    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    """Validate email format and ensure it's a Gmail address"""
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@gmail\.com$'
     return re.match(email_pattern, email) is not None
 
 def authenticate_user(username, password):
@@ -103,6 +102,7 @@ def authenticate_user(username, password):
         return False
 
 def create_user(username, password, email, is_admin=False):
+    
     """Create a new user account with email and 1-month trial"""
     try:
         if os.path.exists(USER_DB_FILE):
@@ -111,19 +111,20 @@ def create_user(username, password, email, is_admin=False):
         else:
             users = {}
         
-        if username in users:
-            return False, "Username already exists"
+        # if username in users:
+        #     return False, "Username already exists"
         
         if not validate_email(email):
-            return False, "Invalid email format"
+            return False, "Please use a valid Gmail address (e.g., username@gmail.com)"
         
-        # Safely check for email uniqueness
+        # Check for email uniqueness
         for user in users.values():
             if 'email' in user and user['email'] == email:
-                return False, "Email already in use"
+                return False, "This Gmail address is already registered. Please use a different Gmail address or log in."
         
         trial_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         trial_end = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d %H:%M:%S")
+        # trial_end = (datetime.now() + timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")  # Line 104: Changed from 
         
         users[username] = {
             "password": hash_password(password),
@@ -480,7 +481,7 @@ def home_page():
     # School Name and Subtitle
     st.markdown('<h1 class="title-text">British School of Karachi </h1>', unsafe_allow_html=True)
     st.markdown('<h1 class="title-text">Fees Management System</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle-text">Streamline your school\'s fee collection and tracking process with a 1-month free trial!</p>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle-text">Streamline your school\'s fee collection and tracking process with a 1-month free trial!</p>', unsafe_allow_html=True) 
     
     # Feature Cards
     col1, col2, col3 = st.columns(3)
@@ -535,7 +536,7 @@ def home_page():
             unsafe_allow_html=True
         )
         
-        st.markdown('<h3 class="about-subheading">✨ Key Features</h3>', unsafe_allow_html=True)
+        st.markdown('<h3 class="about-subheading">✯ Key Features</h3>', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
             st.markdown(
@@ -567,8 +568,9 @@ def home_page():
                     <li>Data saved securely in files (no risk of losing records).</li>
                 </ul>
                 <p class="about-list"><strong>Free 1-Month Trial</strong></p>
+            
                 <ul class="about-list">
-                    <li>New users get 30 days free to test all features.</li>
+                    <li>New users get 30 days free to test all features.</li> 
                 </ul>
                 """,
                 unsafe_allow_html=True
@@ -624,7 +626,7 @@ def home_page():
         st.markdown(
             """
             <p class="about-text">
-                Try the 1-month free trial – no payment needed!
+                Try the 1-month free trial – no payment needed!  
             </p>
             """,
             unsafe_allow_html=True
@@ -635,7 +637,7 @@ def home_page():
     st.markdown("""
     <div style="text-align: center; margin-top: 3rem; color: #7f8c8d; font-size: 0.8rem;">
         <p>© 2025 School Fees Management System | Developed with ❤️ for educational institutions</p>
-        <p>Start your 1-month free trial today!</p>
+        <p>Start your 1-month free trial today!</p> 
     </div>
     """, unsafe_allow_html=True)
 
@@ -643,14 +645,15 @@ def login_page():
     """Display login page with signup option and handle authentication"""
     st.title("🔒 School Fees Management - Login / Sign Up")
     
-    st.markdown("**New users, including admins, must sign up to start a 1-month free trial.**")
+    st.markdown("**New users, including admins, must sign up with their Gmail address to start a 1-month free trial.**") 
+    st.markdown("**⚠️ Please use the same Gmail address you used to access this app.**")
     
     tabs = st.tabs(["Sign Up", "Login"])
     
     with tabs[0]:
         with st.form("signup_form"):
             new_username = st.text_input("Username*")
-            new_email = st.text_input("Email*")
+            new_email = st.text_input("Gmail Address*", placeholder="yourname@gmail.com", help="Only the Gmail address used to access this app is allowed.")
             new_password = st.text_input("Password*", type="password", key="signup_pass")
             confirm_password = st.text_input("Confirm Password*", type="password", key="signup_confirm")
             is_admin = st.checkbox("Register as Admin User")
@@ -659,17 +662,17 @@ def login_page():
             if show_password:
                 st.text(f"Password will be: {new_password if new_password else '[not set]'}")
             
-            signup_submit = st.form_submit_button("Sign Up (Start 1-Month Free Trial)")
+            signup_submit = st.form_submit_button("Sign Up (Start 1-month Free Trial)") 
             
             if signup_submit:
                 if not new_username or not new_password or not new_email:
-                    st.error("Username, password, and email are required!")
+                    st.error("Username, password, and Gmail address are required!")
                 elif new_password != confirm_password:
-                    st.error("Passwords do not match")
+                    st.error("Passwords do not match!")
                 else:
                     success, message = create_user(new_username, new_password, new_email, is_admin)
                     if success:
-                        st.success(f"{message} Your 1-month free trial has started!")
+                        st.success(f"{message} Your 1-month free trial has started!") 
                         st.info(f"User '{new_username}' created with email: {new_email}")
                         if authenticate_user(new_username, new_password):
                             st.rerun()
@@ -695,10 +698,10 @@ def user_management():
     
     with st.expander("➕ Create New User"):
         with st.form("create_user_form"):
-            new_username = st.text_input("New Username")
-            new_email = st.text_input("Email")
-            new_password = st.text_input("New Password", type="password", key="new_pass")
-            confirm_password = st.text_input("Confirm Password", type="password", key="confirm_pass")
+            new_username = st.text_input("New Username*")
+            new_email = st.text_input("Gmail Address*", placeholder="yourname@gmail.com", help="Only Gmail addresses are allowed.")
+            new_password = st.text_input("New Password*", type="password", key="new_pass")
+            confirm_password = st.text_input("Confirm Password*", type="password", key="confirm_pass")
             is_admin = st.checkbox("Admin User")
             show_password = st.checkbox("Show Password")
             
@@ -709,14 +712,14 @@ def user_management():
             
             if submit:
                 if not new_username or not new_password or not new_email:
-                    st.error("Username, password, and email are required!")
+                    st.error("Username, password, and Gmail address are required!")
                 elif new_password != confirm_password:
-                    st.error("Passwords do not match")
+                    st.error("Passwords do not match!")
                 else:
                     success, message = create_user(new_username, new_password, new_email, is_admin)
                     if success:
                         st.success(message)
-                        st.info(f"User '{new_username}' created with email: {new_email}, Trial: 1-month trial started")
+                        st.info(f"User '{new_username}' created with email: {new_email}, Trial: 1-month trial started")  # Line 524: Changed from 1-month to 3-hour trial
                     else:
                         st.error(message)
 
@@ -724,7 +727,7 @@ def user_management():
         try:
             with open(USER_DB_FILE, 'r') as f:
                 users = json.load(f)
-            
+                
             user_data = []
             for username, details in users.items():
                 trial_remaining = "N/A"
@@ -772,7 +775,7 @@ def user_management():
                                 st.error("User not found!")
                         except Exception as e:
                             st.error(f"Error deleting user: {str(e)}")
-            
+
         except Exception as e:
             st.error(f"Error loading users: {str(e)}")
 
@@ -782,11 +785,11 @@ def user_management():
                 users = json.load(f)
             
             users_list = list(users.keys())
-            selected_user = st.selectbox("Select User", users_list)
+            selected_user = st.selectbox("Select User", users_list, key="reset_user_select")
             
             with st.form("reset_password_form"):
-                new_password = st.text_input("New Password", type="password", key="reset_pass")
-                confirm_password = st.text_input("Confirm Password", type="password", key="reset_confirm")
+                new_password = st.text_input("New Password*", type="password", key="reset_pass")
+                confirm_password = st.text_input("Confirm Password*", type="password", key="reset_confirm")
                 show_password = st.checkbox("Show New Password")
                 
                 if show_password:
@@ -1554,12 +1557,12 @@ def main_app():
                                 )
                                         
                                 csv = display_df.to_csv(index=False).encode("utf-8")
-                                st.download_button(
-                                    label=f"📥 Download {month} Data",
-                                    data=csv,
-                                    file_name=f"{month.lower()}_payment_status.csv",
-                                    mime="text/csv"
-                                )
+                                # st.download_button(
+                                #     label=f"📥 Download {month} Data",
+                                #     data=csv,
+                                #     file_name=f"{month.lower()}_payment_status.csv",
+                                #     mime="text/csv"
+                                # )
                             
                             st.subheader("Overall Payment Status")
                             student_summary = merged.groupby(["ID", "Student Name", "Class Category"]).agg({
@@ -1578,12 +1581,13 @@ def main_app():
                             )
                                     
                             csv = student_summary.to_csv(index=False).encode("utf-8")
-                            st.download_button(
-                                label="📥 Download Overall Payment Status",
-                                data=csv,
-                                file_name="overall_payment_status.csv",
-                                mime="text/csv"
-                            )
+                            # st.download_button(
+                            #    label="📥 Download All Records as CSV",
+                            #    data=csv,
+                            #    file_name="all_fee_records.csv",
+                            #    mime="text/csv",
+                            #    key="download_all_records"  # Add this
+                            # )
             
             elif menu == "Student Yearly Report":
                 st.header("📊 Student Yearly Fee Report")
@@ -1672,12 +1676,12 @@ def main_app():
                             
                             st.divider()
                             csv = monthly_report.to_csv(index=False).encode("utf-8")
-                            st.download_button(
-                                label="📥 Download Student Report",
-                                data=csv,
-                                file_name=f"{selected_student}_fee_report.csv",
-                                mime="text/csv"
-                            )
+                            # st.download_button(
+                            #     label="📥 Download Student Report",
+                            #     data=csv,
+                            #     file_name=f"{selected_student}_fee_report.csv",
+                            #     mime="text/csv"
+                            # )
             
             elif menu == "User Management":
                 user_management()
